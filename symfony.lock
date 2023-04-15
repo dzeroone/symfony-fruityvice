@@ -128,6 +128,9 @@
             "./templates/base.html.twig"
         ]
     },
+    "symfony/ux-vue": {
+        "version": "v2.7.1"
+    },
     "symfony/webpack-encore-bundle": {
         "version": "1.16",
         "recipe": {
