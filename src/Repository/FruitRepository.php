@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Fruit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Psr\Log\LoggerInterface;
 
 /**
  * @extends ServiceEntityRepository<Fruit>
@@ -16,7 +18,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class FruitRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private LoggerInterface $logger)
     {
         parent::__construct($registry, Fruit::class);
     }
@@ -63,4 +65,22 @@ class FruitRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    function findFruits($currentPage, $search = '') {
+        $dbQuery = "SELECT f, n FROM App\Entity\Fruit f JOIN f.nutrition n";
+
+        if($search) {
+            $dbQuery = "SELECT f, n FROM App\Entity\Fruit f JOIN f.nutrition n WHERE LOWER(f.name) LIKE '$search%' OR LOWER(f.family) LIKE '$search%'";
+        }
+
+        $this->logger->info($dbQuery);
+
+        $query = $this->getEntityManager()->createQuery($dbQuery);
+        $paginator = new Paginator($query, $fetchJoinCollection = true);
+        $total = count($paginator);
+        $paginator->getQuery()->setFirstResult(10 * ($currentPage - 1) )
+            ->setMaxResults(10);
+        
+        $fruits = $paginator->getQuery()->getArrayResult();
+        return [$total, $fruits];
+    }
 }

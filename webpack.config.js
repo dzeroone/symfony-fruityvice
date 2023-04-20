@@ -1,4 +1,7 @@
 const Encore = require('@symfony/webpack-encore');
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -65,7 +68,12 @@ Encore
     // uncomment if you use React
     //.enableReactPreset()
     .enableVueLoader()
-
+    .addPlugin(AutoImport({
+        resolvers: [ElementPlusResolver()]
+    }))
+    .addPlugin(Components({
+        resolvers: [ElementPlusResolver()],
+    }))
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
     //.enableIntegrityHashes(Encore.isProduction())

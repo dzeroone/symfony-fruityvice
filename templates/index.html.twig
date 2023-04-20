@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-Hello
+<div {{ vue_component('Home', {fruits, total, currentPage, isSignedIn, user: app.user ? { email: app.user.email, roles: app.user.roles } : null }) }}></div>
 {% endblock %}
