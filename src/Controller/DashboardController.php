@@ -21,10 +21,11 @@ class DashboardController extends AbstractController
 
         $qb = $entityManager->createQueryBuilder();
         $qb->select('f, n')->from('App\Entity\LikedFruit', 'lf')
-            ->leftJoin('App\Entity\User', 'u', 'WITH', 'u = :user')
+            ->leftJoin('App\Entity\User', 'u', 'WITH', 'lf.user = u.id')
             ->leftJoin('App\Entity\Fruit', 'f', 'WITH', 'f.id = lf.fruit')
             ->leftJoin('f.nutrition', 'n')
-            ->setParameter('user', $currentUser->getId());
+            ->where('lf.user = :user')
+            ->setParameter('user', $currentUser);
 
         $fruits = $qb->getQuery()->getArrayResult();
 
