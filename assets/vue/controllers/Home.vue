@@ -151,7 +151,7 @@ import { ElNotification } from 'element-plus';
 
 <template>
   <Layout :user="props.user">
-    <h1>Helo home</h1>
+    <h1>Fruit list</h1>
     <el-form @submit="onSubmit">
       <el-form-item>
         <el-input v-model="searchStr" placeholder="Search by name or family">

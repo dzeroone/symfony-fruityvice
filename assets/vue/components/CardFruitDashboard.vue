@@ -1,8 +1,4 @@
 <script setup>
-  import { ref } from 'vue';
-  import { ClickOutside as vClickOutside } from 'element-plus'
-  import IconLove from './icons/IconLove.vue';
-
   const props = defineProps({
     fruit: Object
   })
@@ -14,11 +10,14 @@
       <div class="card-header">
         <div>
           <h3 class="card-header-title">{{ fruit.name }}</h3>
-          <span class="scientific-name">{{ fruit.taxo_order }} {{ fruit.family }} {{ fruit.genus }}</span>
         </div>
       </div>
     </template>
     <div style="padding: var(--el-card-padding)">
+      <div>Order: <span class="scientific-name">{{ fruit.taxo_order }}</span></div>
+      <div>Family: <span class="scientific-name">{{ fruit.family }}</span></div>
+      <div>Genus: <span class="scientific-name">{{ fruit.genus }}</span></div>
+      <br />
       <div>Nutritions -</div>
       <ul>
         <li>carbohydrates: {{ fruit.nutrition.carbohydrates }}</li>
