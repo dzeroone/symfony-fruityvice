@@ -4,13 +4,17 @@ import CardFruitDashboard from '../components/CardFruitDashboard.vue';
 
 const props = defineProps({
   user: Object,
-  fruits: Array
+  fruits: Array,
+  totalNutrition: Number
 })
 </script>
 
 <template>
   <Layout :user="user">
     <h2>Dashboard</h2>
+    <el-card>
+      Total Nutrition of all fruits is {{ totalNutrition.toFixed(2) }}
+    </el-card>
     <h3>Liked fruits - </h3>
     <el-row :gutter="20">
       <el-col

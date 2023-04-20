@@ -29,8 +29,15 @@ class DashboardController extends AbstractController
 
         $fruits = $qb->getQuery()->getArrayResult();
 
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('sum(n.carbohydrates + n.protein + n.fat + n.calories + n.sugar)');
+        $qb->from('App\Entity\Nutrition', 'n');
+
+        $sum = $qb->getQuery()->getSingleScalarResult();
+
         return $this->render('dashboard/index.html.twig', [
             'fruits' => $fruits,
+            'totalNutrition' => $sum
         ]);
     }
 }

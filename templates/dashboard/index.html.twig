@@ -3,5 +3,5 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-<div {{ vue_component('Dashboard', { fruits, user: app.user ? { email: app.user.email, roles: app.user.roles } : null}) }}></div>
+<div {{ vue_component('Dashboard', { fruits, totalNutrition, user: app.user ? { email: app.user.email, roles: app.user.roles } : null}) }}></div>
 {% endblock %}
