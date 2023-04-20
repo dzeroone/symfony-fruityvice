@@ -65,17 +65,32 @@ class FruitRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    function findFruits($currentPage, $search = '') {
+    function findFruits($currentPage, $search = '', $user = null) {
         $dbQuery = "SELECT f, n FROM App\Entity\Fruit f JOIN f.nutrition n";
+        if($user) {
+            $dbQuery = "SELECT f, n, lf
+                FROM App\Entity\Fruit f
+                LEFT JOIN f.nutrition n
+                LEFT JOIN f.likes lf WITH lf.user = {$user->getId()}
+            ";
+        }
 
         if($search) {
             $dbQuery = "SELECT f, n FROM App\Entity\Fruit f JOIN f.nutrition n WHERE LOWER(f.name) LIKE '$search%' OR LOWER(f.family) LIKE '$search%'";
+            if($user) {
+                $dbQuery = "SELECT f, n, lf.id IS NOT NULL AS liked
+                    FROM App\Entity\Fruit f
+                    LEFT JOIN f.nutrition n
+                    LEFT JOIN f.likes lf WITH lf.user = {$user->getId()}
+                    WHERE LOWER(f.name) LIKE '$search%' OR LOWER(f.family) LIKE '$search%'
+                ";
+            }
         }
 
-        $this->logger->info($dbQuery);
+        // $this->logger->info($dbQuery);
 
         $query = $this->getEntityManager()->createQuery($dbQuery);
-        $paginator = new Paginator($query, $fetchJoinCollection = true);
+        $paginator = new Paginator($query, true);
         $total = count($paginator);
         $paginator->getQuery()->setFirstResult(10 * ($currentPage - 1) )
             ->setMaxResults(10);

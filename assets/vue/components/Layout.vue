@@ -13,14 +13,19 @@ console.log('uu', props.user)
     <Container>
       <div class="navbar"> 
         <img src="/images/fruits-pear-svgrepo-com.svg" alt="Logo" class="brand-logo"/><div class="brand">FruityFun</div>
+        <div class="user-nav">
+          <div class="user-nav-item">
+            <el-link href="/" type="success">Home</el-link>
+          </div>
+          <div class="user-nav-item" v-if="props.user">
+            <el-link href="/dashboard" type="success">Dashboard</el-link>
+          </div>
+        </div>
         <div class="navbar-right-content">
-          <el-row :gutter="10" v-if="props.user">
-            <el-col span="auto">{{ props.user.email }}</el-col>
-            <el-col span="auto">
-              <el-link href="/dashboard" type="success">Dashboard</el-link>
-            </el-col>
-            <el-col span="auto"><el-link href="/signout" type="success">Signout</el-link></el-col>
-          </el-row>
+          <div class="user-nav" v-if="props.user">
+            <div class="user-nav-item">{{ props.user.email }}</div>
+            <div class="user-nav-item"><el-link href="/signout" type="success">Signout</el-link></div>
+          </div>
           <div v-else>
             <el-link href="/signin" type="success">Signin</el-link>
           </div>
@@ -55,5 +60,12 @@ console.log('uu', props.user)
 }
 .main-content {
   padding: 1rem 0;
+}
+.user-nav {
+  display: flex;
+  flex-direction: row;
+}
+.user-nav-item{
+  margin-left: 0.5rem;
 }
 </style>

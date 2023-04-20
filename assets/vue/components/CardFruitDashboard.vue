@@ -6,15 +6,6 @@
   const props = defineProps({
     fruit: Object
   })
-  const likeBtnRef = ref(null);
-
-  const emit = defineEmits(['likeToggle', 'clickedOutside'])
-  const onLikeClicked = () => {
-    emit('likeToggle', likeBtnRef);
-  }
-  const onClickOutside = (e) => {
-    emit('clickedOutside', e);
-  }
 </script>
 
 <template>
@@ -25,12 +16,6 @@
           <h3 class="card-header-title">{{ fruit.name }}</h3>
           <span class="scientific-name">{{ fruit.taxo_order }} {{ fruit.family }} {{ fruit.genus }}</span>
         </div>
-        <el-button
-          ref="likeBtnRef"
-          :class="{
-            'btn-like': true,
-            'liked': Array.isArray(fruit.likes) ? fruit.likes.length : false
-          }" :icon="IconLove" circle @click="onLikeClicked" v-click-outside="onClickOutside"/>
       </div>
     </template>
     <div style="padding: var(--el-card-padding)">

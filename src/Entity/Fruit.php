@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FruitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FruitRepository::class)]
@@ -30,6 +32,14 @@ class Fruit
 
     #[ORM\Column]
     private ?int $remote_id = null;
+
+    #[ORM\OneToMany(mappedBy: 'fruit', targetEntity: LikedFruit::class, orphanRemoval: true)]
+    private Collection $likes;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,6 +119,36 @@ class Fruit
     public function setRemoteId(int $remote_id): self
     {
         $this->remote_id = $remote_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LikedFruit>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(LikedFruit $liked): self
+    {
+        if (!$this->likes->contains($liked)) {
+            $this->likes->add($liked);
+            $liked->setFruit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiked(LikedFruit $liked): self
+    {
+        if ($this->likes->removeElement($liked)) {
+            // set the owning side to null (unless already changed)
+            if ($liked->getFruit() === $this) {
+                $liked->setFruit(null);
+            }
+        }
 
         return $this;
     }

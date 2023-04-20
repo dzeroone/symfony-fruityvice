@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Controller;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class DashboardController extends AbstractController
+{
+    #[Route('/dashboard', name: 'app_dashboard')]
+    public function index(
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        $currentUser = $this->getUser();
+        if(!$currentUser) {
+            return $this->redirect('/');
+        }
+
+        $qb = $entityManager->createQueryBuilder();
+        $qb->select('f, n')->from('App\Entity\LikedFruit', 'lf')
+            ->leftJoin('App\Entity\User', 'u', 'WITH', 'u = :user')
+            ->leftJoin('App\Entity\Fruit', 'f', 'WITH', 'f.id = lf.fruit')
+            ->leftJoin('f.nutrition', 'n')
+            ->setParameter('user', $currentUser->getId());
+
+        $fruits = $qb->getQuery()->getArrayResult();
+
+        return $this->render('dashboard/index.html.twig', [
+            'fruits' => $fruits,
+        ]);
+    }
+}

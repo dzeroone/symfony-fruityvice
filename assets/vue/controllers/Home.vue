@@ -4,6 +4,7 @@
   import IconSearch from '../components/icons/IconSearch.vue';
 
   import { ref, unref, watchEffect } from 'vue';
+import { ElNotification } from 'element-plus';
 
   const props = defineProps({
       fruits: Array,
@@ -24,6 +25,8 @@
   const activeLikeBtnRef = ref(null);
   const warningPopoverRef = ref(null);
   const signinWarningShown = ref(false);
+  const likeNoticeEffect = ref('liked');
+  const likedNoticeShown = ref(false);
 
   const currentPage = ref(props.currentPage);
   const fruitList = ref([...props.fruits]);
@@ -46,6 +49,42 @@
     }
   }
 
+  let likeNoticeTimerId = null;
+
+  const sendLikeUpdateReq = async (fruit, isLiked) => {
+    try {
+      const res = await fetch(`${baseUrl}/fruits/${fruit.id}/like`, {
+        method: 'POST'
+      })
+      const data = await res.json();
+      if(data.success) {
+        if(isLiked) {
+          likeNoticeEffect.value = 'liked'
+        }else{
+          likeNoticeEffect.value = 'unliked'
+        }
+
+        likedNoticeShown.value = true;
+        if(likeNoticeTimerId) clearTimeout(likeNoticeTimerId)
+        likeNoticeTimerId = setTimeout(() => {
+          likedNoticeShown.value = false;
+        }, 3000)
+        
+        return {
+          id: data.id
+        }
+      }else{
+        ElNotification({
+          title: 'Error',
+          message: data.message,
+          type: 'error',
+        })
+      }
+    }catch(e) {
+
+    }
+  }
+
   watchEffect(() => {
     const query = new URLSearchParams({
       search: activeSearchStr.value,
@@ -54,14 +93,18 @@
     fetchFruits(query)
   })
 
-  const onLikeToggle = (btnRef, index) => {
+  const onLikeToggle = async (btnRef, index) => {
     activeLikeBtnRef.value = btnRef;
     if(!props.isSignedIn) {
       signinWarningShown.value = true;
-    }else if(fruitList.value[index].liked) {
-      fruitList.value[index].liked = false;
+    }else if(fruitList.value[index].likes.length) {
+      await sendLikeUpdateReq(fruitList.value[index], false);
+      fruitList.value[index].likes = []
     }else{
-      fruitList.value[index].liked = true;
+      let d = await sendLikeUpdateReq(fruitList.value[index], true);
+      fruitList.value[index].likes = [{
+        id: d.id
+      }];
     }
   }
 
@@ -143,11 +186,13 @@
     >
       Signin required!
     </el-popover>
+    <el-tooltip
+      :visible="likedNoticeShown"
+      :content="likeNoticeEffect == 'liked' ? 'Liked' : 'Unliked'"
+      placement="left"
+      :effect="likeNoticeEffect"
+      :virtual-ref="activeLikeBtnRef"
+      virtual-triggering
+    />
   </Layout>
 </template>
-
-<style scoped>
-.fruit-card-wrapper{
-  margin-bottom: 1rem;
-}
-</style>

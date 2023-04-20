@@ -3,3 +3,16 @@ html, body {
     margin: 0;
     font-size: 16px;
 }
+.fruit-card-wrapper{
+    margin-bottom: 1rem;
+}
+.el-popper.is-liked,
+.el-popper.is-liked .el-popper__arrow::before{
+    background: var(--el-color-success);
+    color: var(--el-color-white);
+}
+.el-popper.is-unliked,
+.el-popper.is-unliked .el-popper__arrow::before{
+    background: var(--el-color-error);
+    color: var(--el-color-black);
+}
