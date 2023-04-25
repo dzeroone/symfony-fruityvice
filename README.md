@@ -57,7 +57,7 @@ FROM_EMAIL=dummy_sender@dummy.com
 ADMIN_EMAIL=dummy_admin@dummy.com
 ```
 
-Run following command to initite test database
+Run following command to initiate test database
 ```bash
 $ php bin/console --env=test doctrine:database:create
 $ php bin/console --env=test doctrine:schema:create
