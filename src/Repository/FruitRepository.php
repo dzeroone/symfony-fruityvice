@@ -65,7 +65,7 @@ class FruitRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    function findFruits($currentPage, $search = '', $user = null) {
+    function findFruits($currentPage = 1, $search = '', $user = null) {
         $dbQuery = "SELECT f, n FROM App\Entity\Fruit f JOIN f.nutrition n";
         if($user) {
             $dbQuery = "SELECT f, n, lf
