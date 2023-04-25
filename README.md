@@ -43,6 +43,26 @@ Build vue source
 Start server
 `$ symfony server:start`
 
+## Setup test environment
+create `.env.test.local` and added neccessary environment variables for this project.
+```
+KERNEL_CLASS='App\Kernel'
+APP_SECRET='$ecretf0rt3st'
+SYMFONY_DEPRECATIONS_HELPER=999999
+PANTHER_APP_ENV=panther
+PANTHER_ERROR_SCREENSHOT_DIR=./var/error-screenshots
+DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name?serverVersion=mariadb-10.4.28&charset=utf8"
+MAILER_DSN=null://null
+FROM_EMAIL=dummy_sender@dummy.com
+ADMIN_EMAIL=dummy_admin@dummy.com
+```
+
+Run following command to initite test database
+```bash
+$ php bin/console --env=test doctrine:database:create
+$ php bin/console --env=test doctrine:schema:create
+```
+
 That's it. If you find any bug or have any kind of interesting idea, feel free to create an issue on it.
 
 Happy coding ;)
