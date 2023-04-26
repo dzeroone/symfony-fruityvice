@@ -63,6 +63,11 @@ $ php bin/console --env=test doctrine:database:create
 $ php bin/console --env=test doctrine:schema:create
 ```
 
+Run the test command
+```bash
+$ php bin/phpunit
+```
+
 That's it. If you find any bug or have any kind of interesting idea, feel free to create an issue on it.
 
 Happy coding ;)
